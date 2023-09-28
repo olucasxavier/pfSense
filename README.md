@@ -20,11 +20,8 @@ Firewalls are a critical component of network security, and pfSense is an excell
 
 **Prerequisites:**
 
-Before you begin, ensure that you have the following:
-
-1. A machine with at least two network interfaces (NICs).
-2. A USB drive (minimum 4GB) to create a bootable pfSense installer.
-3. A stable internet connection for downloading pfSense.
+In my case, as I'm using Proxmox, I'm going to deploy pfSense using a VM (virtual Machine).
+Below is a guide to help you set up pfSense in a Proxmox VM. This setup assumes you already have Proxmox installed and running on your hardware.
 
 **Step 1: Download pfSense ISO**
 
@@ -32,42 +29,63 @@ Before you begin, ensure that you have the following:
 2. Select the appropriate architecture for your hardware (usually "AMD64" for 64-bit systems).
 3. Download the pfSense ISO image.
 
-**Step 2: Create a Bootable USB Drive**
+**Step 2: Upload pfSense ISO to Proxmox**
 
-1. Download a tool like Rufus (for Windows) or Etcher (for Linux/macOS) to create a bootable USB drive.
-2. Insert your USB drive into your computer.
-3. Open Rufus or Etcher and select the pfSense ISO file you downloaded earlier.
-4. Choose your USB drive as the target device.
-5. Click "Start" or "Flash" to create the bootable USB drive. This process will erase any existing data on the USB drive.
+1. Open the Proxmox web interface using a web browser.
+2. Navigate to the Proxmox node where you want to create the pfSense VM.
+3. Click on "Datacenter" in the left sidebar, then select the storage where you want to upload the pfSense ISO (usually "local").
+4. Click the "Upload" button and select the pfSense ISO file you downloaded. Upload it to the storage.
 
-**Step 3: Boot from the USB Drive**
+**Step 3: Create a New VM in Proxmox**
 
-1. Insert the bootable USB drive into your target machine.
-2. Restart your machine and boot from the USB drive. You may need to access your BIOS or UEFI settings to set the boot order to prioritize the USB drive.
+1. In the Proxmox web interface, select the node where you want to create the VM.
+2. Click on "Create VM" to start the VM creation wizard.
+3. Follow these settings in the wizard:
 
-**Step 4: pfSense Installation**
+**- General:**
 
-1. When the pfSense installer menu appears, select "Install pfSense."
-2. Choose your preferred keymap, and press "Enter."
-3. Accept the pfSense software license agreement.
-4. Select the installation mode. For most users, "Install" is the recommended option.
-5. Choose the target drive where you want to install pfSense. Typically, this will be the primary hard drive of your machine.
-6. Confirm the installation by typing "YES" (in uppercase) and press "Enter."
-7. Wait for the installation process to complete.
-8. Once the installation is finished, remove the USB drive and reboot your machine.
+VM ID: Choose a unique ID for your VM (e.g., 100).
+Name: Give your VM a descriptive name (e.g., pfSense).
+Guest OS: Select "Linux 4.x/5.x Kernel."
 
-**Step 5: Initial pfSense Configuration**
+**- CD/DVD:**
 
-1. After rebooting, you'll see pfSense booting up. It will assign IP addresses to your network interfaces. Note down the LAN interface's IP address, which is typically 192.168.1.1.
-2. Open a web browser on another computer and enter the LAN interface's IP address in the address bar (e.g., http://192.168.1.1).
-3. You'll be prompted to set up the initial configuration, including the administrator password and the WAN interface configuration.
-4. Follow the on-screen prompts to complete the initial setup. You'll have the option to configure WAN and LAN settings, DHCP, and other network configurations.
+Select the pfSense ISO image you uploaded earlier.
 
-Once the initial configuration is complete, you'll have access to the pfSense web interface.
+**- System:**
 
-**Step 6: pfSense Configuration**
+BIOS: Choose "SeaBIOS" as the BIOS/UEFI.
+**- Hard Disk:**
 
-Now that you have pfSense installed and configured, you can use the web interface to set up firewall rules, configure network services, and manage your firewall.
+Add a hard disk if you plan to store VM data. For pfSense, you can use the default settings.
+**- CPU:**
+
+Allocate CPU cores as needed for your environment. Two cores are typically sufficient for a basic pfSense setup.
+**- Memory:**
+
+Allocate RAM based on your needs. A minimum of 2GB is recommended for pfSense.
+**- Network:**
+
+Select your network interfaces. Assign at least two network interfaces to your pfSense VM (one for WAN and one for LAN). Use the "virtio" driver for better performance.
+
+**- Confirm:**
+
+Review your settings and click "Finish" to create the VM.
+
+**Step 4: Install pfSense**
+
+1. Select the newly created VM (pfSense) in the Proxmox web interface.
+2. Click "Start" to boot the VM.
+3. In the console window, you will see the pfSense installation process. Follow the on-screen instructions to install pfSense. Configure the WAN and LAN interfaces as needed.
+4. Once the installation is complete, the VM will reboot.
+
+**Step 5: pfSense Configuration**
+
+1. After the VM reboots, you can access the pfSense web interface using a web browser. To do this, find the IP address assigned to the LAN interface of your pfSense VM (usually 192.168.1.1) and enter it in your browser.
+2. Complete the initial pfSense configuration by following the on-screen prompts. This includes setting up the WAN and LAN interfaces, DHCP, and other network settings.
+3. Once the initial configuration is complete, you'll have full access to the pfSense web interface for further configuration, firewall rule setup, and network management.
+
+That's it! You've successfully installed pfSense as a virtual machine within a Proxmox container. You can now use the pfSense web interface to configure your firewall and secure your network as needed.
 
 This is a basic overview of the installation process. Please refer to the official pfSense documentation for more detailed instructions and troubleshooting if needed.
 </p>
